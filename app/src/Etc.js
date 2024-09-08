@@ -1,10 +1,11 @@
 import React from "react";
 import { useState, useEffect} from 'react';
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 function Etc(){
 
     const location = useLocation();
+    const navigate = useNavigate();
     // const [savedValue, setSavedValue] = useState('');
     const [inputList, setInputList] = useState([]);
 
@@ -20,6 +21,10 @@ function Etc(){
         setInputList(location.state.inputList);
         }
     },[location.state]);
+
+    const goToMain = () => {
+        navigate('/');
+    }
 
 return(
     <div>
@@ -40,7 +45,11 @@ return(
                 ))}
             </tbody>
         </table>
-    ):(<p>저장된 값이 없음</p>)}
+    ):(<p>저장된 값이 없음</p>
+
+    )}
+    <br/>
+    <button onClick = {goToMain}>메인으로 가기</button>
     
     </div>
 );
