@@ -22,7 +22,6 @@ const Calculator = () => {
                 </div>
                 </>
             )}
-        
         </CalculatorContext.Consumer>
     )
 }

@@ -56,9 +56,14 @@ function Main(){
         <button onClick={goLogin}>로그인 </button>
         <br/> <br/>
         {/* <button onClick={goEtc}>기타</button> */}
+        <ul>
+            {inputList.map((value, index)=>(
+                <li key={index}>{value}</li>
+            ))}
+        </ul>
         </div>
     )
 
 }
 
-export default Main;
+export default Main;  
