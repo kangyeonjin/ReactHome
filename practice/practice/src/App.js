@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import Chat from './Chat';
 import ErrorBoundary from './ErrorBoundary';
+import ChatData from './ChatData';
 
 function App() {
 
@@ -27,6 +28,7 @@ function AppWrapper() {
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path='/chatdata' element={<ChatData/>}/>
       </Routes>
     </Router>
     </ErrorBoundary>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import io from 'socket.io-client';
-import { v4 as uuidv4 } from 'uuid';  //uuid생성 라이브러리
+// import { v4 as uuidv4 } from 'uuid';  //uuid생성 라이브러리
+import { useNavigate } from "react-router-dom";
 
 const socket = io('ws://localhost:5000')
 
@@ -8,9 +9,10 @@ function Chat (){
 
     const [message, setMessage] = useState('');
     const [chat, setChat] = useState([]);  //chat상태배열초기화
-    const [userId] = useState(uuidv4()); // 고유한 사용자 ID 생성
+    // const [userId] = useState(uuidv4()); // 고유한 사용자 ID 생성
     const [name, setName] = useState('');
     // const [room, setRoom] = useState('default'); //기본방설정
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -52,8 +54,6 @@ function Chat (){
             setMessage('');
         }
     };
-
-
     return(
 <>
 {/* <h1>Chat Room:{room}</h1> */}
@@ -72,6 +72,8 @@ function Chat (){
     onChange={(e)=>setMessage(e.target.value)}
     placeholder="Enter message"/>
     <button type="submit">Send</button>
+    <br/><br/>
+    <button type="button" onClick={() => navigate('/chatdata', { state: { chat } })}>Data</button>
 </form>
 </>
     );
