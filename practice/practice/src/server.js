@@ -1,84 +1,105 @@
-const express = require('express');
-const http = require('http');
-const {Server} = require('socket.io');
-const cors = require('cors');
-const mongoose = require('mongoose');
+import { useEffect, useState } from "react";
+import io from 'socket.io-client';
+// import { v4 as uuidv4 } from 'uuid';  //uuid생성 라이브러리
+import { useNavigate } from "react-router-dom";
 
-const app= express();
-const server = http.createServer(app);
-const path = require('path');
-const io = new Server(server);  // 여기서 socketIo를 Server로 변경
+const socket = io('ws://localhost:5000')
 
-mongoose.connect('mongodb://localhost:27017/chat', {
-    userNewUrlParser:true,
-    useUnifiedTopology: true
-});
+function Chat (){
 
-const chatSchema = new mongoose.Schema({
-    name: String,
-    message: String,
-    timestamp:{type: Date, default: Date.now}
-});
+    const [message, setMessage] = useState('');
+    const [chat, setChat] = useState([]);  //chat상태배열초기화
+    // const [userId] = useState(uuidv4()); // 고유한 사용자 ID 생성
+    const [name, setName] = useState('');
+    // const [room, setRoom] = useState('default'); //기본방설정
+    const navigate = useNavigate();
 
-const Chat = mongoose.model('Chat', chatSchema);
+    useEffect(() => {
 
-// const corsOptions = {
-//     origin: "http://localhost:3000",
-//     methods: ["GET", "POST"],
-//     allowedHeaders: ["Content-Type"]
-// };
-// app.use(cors(corsOptions));
+        // socket.emit('join room', room); //방에 참여
 
-//CORS 미들웨어 추가
-app.use(cors({
-    origin: "http://localhost:3000", // 클라이언트의 URL
-    methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type"]
-}));
+        const handleMessage = (msg) => {
+            console.log(msg);
+            if(msg && msg.name && msg.message){
+            // setChat((prevChat) => [...prevChat, msg]);
+            setChat((prevChat) => [...prevChat, { name: msg.name, message: msg.message }]);
+            }else{
+                console.error('Invalid message object :', msg);
+            }
+        };
+    
+        socket.on('chat message', handleMessage);
+    
+        return () => {
+            socket.off('chat message', handleMessage);
+        };
+    }, []);
+    // }, [room]);
 
+    // useEffect(()=>{
+    //     socket.on('chat message', (msg)=>{
+    //         setChat((prevChat)=>[...prevChat, msg]);  //chat에 새 메세지 추가
+    //     });
 
-// 정적 파일 제공 설정
-app.use(express.static(path.join(__dirname, 'build')));
-app.use(express.static(path.join(__dirname, 'public')));
+    //     return() =>{
+    //         socket.off('chat message');
+    //     };
+    // },[]);
 
-// // 기본 라우트 처리
-app.get('*', (req, res) => {
-    // res.sendFile(path.join(__dirname, 'build', 'index.html'));
-    res.sendFile(path.resolve(__dirname, 'build', 'index.html'));
-});
+    const sendMessage =async(e) => {
+        e.preventDefault();
+        if(message && name){
 
-// const io = new Server(server, {
-//     cors: {
-//       origin: "http://localhost:3000", // 클라이언트가 실행되는 주소
-//       methods: ["GET", "POST"]
-//     }
-//   });
+            const chatMessage ={name, message};
 
-io.on('connection', (socket) =>{
-    console.log('a user connected');
+            console.log({name, message});
+            socket.emit('chat message', chatMessage); //name과 message를 함께보냄
 
-    //클라이언트가 방에 참여
-    socket.on('join room', (room)=>{
-        socket.join(room);
-        console.log('User joined room: ${room}'); //템플릿 리터럴사용
-    })
+            try{
+                const response = await fetch('http://localhost:8080/chat/save',{
+                    method:'POST',
+                    headers:{
+                        'Content-Type':'application/json',
+                    },
+                    body: JSON.stringify(chatMessage),
+                });
 
-    socket.on('chat message', (msg)=>{
-        console.log(msg);
-        // const room = msg.room;
-        const chatMessage = new Chat({name:msg.name, message:msg.message});
-        chatMessage.save().then(()=>{
-            io.emit('chat message', msg);
-        });
-        // io.emit('chat message', msg); //모든 클라이언트에게 메세지 전송
-        // io.to(room).emit('chat message', msg.message); //특정방에 메세지전송
-    });
+                if(!response.ok){
+                    throw new Error('Failed to save message');
+                }
 
-    socket.on('disconnect', ()=>{
-        console.log('user disconnected');
-    })
-})
+                const data = await response.json();
+                console.log('Message saved:', data);
+            }catch(error){
+                console.error('Error saving message:', error);
+            }
 
-server.listen(5000, ()=>{
-    console.log('listening on *:5000');
-})
+            setMessage('');
+        }
+    };
+    return(
+<>
+{/* <h1>Chat Room:{room}</h1> */}
+<h1>chat</h1>
+<div>
+{chat.length > 0 && chat.map((msg, index) => (  // chat 상태 사용
+        <p key={index}><strong>{msg.name}:</strong>{msg.message}</p>
+        ))}
+</div>
+
+<form onSubmit={sendMessage}>
+<input type="text" value={name} 
+    onChange={(e) => setName(e.target.value)}
+    placeholder="Enter your name"/>
+    <input type="text" value={message} 
+    onChange={(e)=>setMessage(e.target.value)}
+    placeholder="Enter message"/>
+    <button type="submit">Send</button>
+    <br/><br/>
+    <button type="button" onClick={() => navigate('/chatdata', { state: { chat } })}>Data</button>
+</form>
+</>
+    );
+}
+
+export default Chat;
