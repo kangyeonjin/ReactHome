@@ -36,6 +36,14 @@ dependencies {
 
     implementation 'com.atomikos:transactions-jta:5.0.8'
     implementation 'com.atomikos:transactions-jdbc:5.0.8' // JDBC 지원
+
+    // WebSocket 지원
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+//    implementation 'io.socket:socket.io-server:2.0.1' // Socket.IO 서버
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
+    // Swagger
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 }
 
 tasks.named('test') {

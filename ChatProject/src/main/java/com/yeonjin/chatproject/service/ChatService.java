@@ -3,7 +3,6 @@ package com.yeonjin.chatproject.service;
 import com.yeonjin.chatproject.model.entity.ChatEntity;
 import com.yeonjin.chatproject.repository.ChatRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

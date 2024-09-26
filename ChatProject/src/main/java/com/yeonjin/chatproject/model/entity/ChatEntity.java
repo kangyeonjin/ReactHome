@@ -28,9 +28,9 @@ public class ChatEntity {
     @Column(nullable = false)
     private LocalDateTime timestamp;  // 메시지 보낸 시간
 
-    @Column(nullable = true)
+    @Column
     private String roomId;  // 대화방 ID (optional)
 
-    @Column(nullable = true)
+    @Column
     private String receiver;  // 수신자정보 (optional)
 }

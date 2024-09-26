@@ -3,6 +3,7 @@ import Chat from './Chat';
 import ErrorBoundary from './ErrorBoundary';
 import ChatData from './ChatData';
 import Mail from './Mail';
+import React from 'react';
 
 function App() {
 
