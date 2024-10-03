@@ -2,11 +2,12 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+    mode: 'development',
     entry: './src/index.js', // 엔트리 파일
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js', // 번들링된 파일 이름
-        publicPath: '/',
+        publicPath: '/', 
     },
     module: {
         rules: [
@@ -37,6 +38,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './public/index.html', // 템플릿 HTML 파일
+            inject: 'body',
         }),
     ],
     resolve: {

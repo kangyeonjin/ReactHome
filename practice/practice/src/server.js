@@ -38,6 +38,9 @@ function server (){
             // }else{
             //     console.error('Invalid message object :', msg);
             // }
+
+            const decodedMessage = decodeURIComponent(msg.message);
+
             if (msg && msg.name && msg.message) {
                 dispatch(updateChatHistory([...chat, { name: msg.name, message: msg.message }]));
             } else {
@@ -56,7 +59,10 @@ function server (){
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (message && name) {
-            const chatMessage = { name, message };
+
+            //메시지 uri 인코딩
+            const encodedMessage = encodeURIComponent(message);
+            const chatMessage = { name, message: encodedMessage };
 
             console.log(chatMessage);
             // 메시지를 소켓을 통해 전송
@@ -87,7 +93,7 @@ function server (){
     };
 
     return (
-        <>
+        <div>
             <h1>Chat</h1>
             <div>
                 {chat.length > 0 &&
@@ -118,7 +124,7 @@ function server (){
                     Data
                 </button>
             </form>
-        </>
+        </div>
     );
 }
 
