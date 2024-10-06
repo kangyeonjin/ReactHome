@@ -6,7 +6,7 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/*swagger를 설정해서 스프링애플리케이션의api문서를 자동으로 생성하는 설정을 포함함
+/*swagger를 설정해서 스프링애플리케이션의 api문서를 자동으로 생성하는 설정을 포함함
 * 스웨거는 api의 명세를 자동으로 문서화하는데 유용한 도구*/
 @OpenAPIDefinition(
         info =@Info(title ="JWT사용연습",  //문서의 제목을 설정함
